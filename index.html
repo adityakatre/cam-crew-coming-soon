@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cam Crew — Coming Soon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0d0d0d;
+      --white: #f9f6f1;
+      --cream: #ede8df;
+      --accent: #c8a96e;
+      --muted: #9e9487;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--white);
+      color: var(--black);
+      font-family: 'Playfair Display', Georgia, serif;
+      overflow: hidden;
+    }
+
+    /* Film grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.6;
+    }
+
+    /* Decorative film-strip edges */
+    .strip-left, .strip-right {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 28px;
+      background: var(--black);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      padding: 12px 0;
+    }
+    .strip-left { left: 0; }
+    .strip-right { right: 0; }
+
+    .hole {
+      width: 14px;
+      height: 10px;
+      background: var(--white);
+      border-radius: 2px;
+      opacity: 0.9;
+    }
+
+    /* Top & bottom film borders */
+    .strip-top, .strip-bottom {
+      position: fixed;
+      left: 28px; right: 28px;
+      height: 28px;
+      background: var(--black);
+      z-index: 10;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 12px;
+    }
+    .strip-top { top: 0; }
+    .strip-bottom { bottom: 0; }
+
+    .hole-h {
+      width: 10px;
+      height: 14px;
+      background: var(--white);
+      border-radius: 2px;
+      opacity: 0.9;
+    }
+
+    /* Main centered content */
+    .stage {
+      position: fixed;
+      inset: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    /* Decorative thin rule above */
+    .rule {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--accent));
+      margin-bottom: 32px;
+      animation: fadeDown 1.2s ease forwards;
+      opacity: 0;
+    }
+
+    /* Icon */
+    .icon-wrap {
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s ease forwards;
+    }
+
+    .streamline-plump--camera-video {
+      display: inline-block;
+      width: 52px;
+      height: 52px;
+      --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23000' stroke-linejoin='round' stroke-width='4'%3E%3Cpath d='M3.272 40.156c.192 2.542 2.183 4.426 4.728 4.572c2.475.141 6.092.272 11 .272s8.525-.131 11-.272c2.545-.146 4.536-2.03 4.728-4.572C34.876 38.19 35 35.5 35 32s-.124-6.19-.272-8.156c-.192-2.542-2.183-4.426-4.728-4.572c-2.475-.141-6.093-.272-11-.272s-8.525.131-11 .273c-2.545.145-4.536 2.029-4.728 4.57C3.124 25.81 3 28.502 3 32s.124 6.19.272 8.156Z'/%3E%3Cpath d='M34.895 37.29c.064-1.503.105-3.26.105-5.29s-.041-3.788-.106-5.291c1.635-.871 3.94-2.007 6.233-2.825c1.801-.643 3.512.454 3.672 2.36c.113 1.353.201 3.22.201 5.755c0 2.536-.088 4.402-.201 5.755c-.16 1.906-1.87 3.003-3.672 2.36c-2.292-.817-4.598-1.953-6.232-2.825ZM7 8.5a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0M23 10a4 4 0 1 0 8 0a4 4 0 1 0-8 0m.023 16.651c.033-.863.592-1.52 1.452-1.594A18 18 0 0 1 26 25c.63 0 1.13.024 1.525.057c.86.074 1.42.732 1.452 1.594c.014.357.023.8.023 1.349s-.01.992-.023 1.349c-.033.863-.592 1.52-1.452 1.594A18 18 0 0 1 26 31c-.63 0-1.13-.023-1.525-.057c-.86-.074-1.42-.731-1.452-1.594c-.014-.357-.023-.8-.023-1.349s.01-.992.023-1.349Z'/%3E%3C/g%3E%3C/svg%3E");
+      background-color: var(--black);
+      -webkit-mask-image: var(--svg);
+      mask-image: var(--svg);
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+    }
+
+    /* Brand name */
+    .brand {
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Thin gold divider */
+    .divider {
+      width: 80px;
+      height: 1.5px;
+      background: var(--accent);
+      margin: 22px auto;
+      opacity: 0;
+      animation: expand 1s 0.9s ease forwards;
+      transform-origin: center;
+      transform: scaleX(0);
+    }
+
+    /* Subtitle */
+    .subtitle {
+      font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      animation: fadeUp 1s 1.1s ease forwards;
+    }
+
+    /* Rule below */
+    .rule-bottom {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to top, transparent, var(--accent));
+      margin-top: 32px;
+      opacity: 0;
+      animation: fadeUp 1.2s 1.3s ease forwards;
+    }
+
+    /* Subtle corner labels */
+    .corner {
+      position: fixed;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeIn 1.5s 1.6s ease forwards;
+    }
+    .corner-tl { top: 44px; left: 44px; }
+    .corner-tr { top: 44px; right: 44px; text-align: right; }
+    .corner-bl { bottom: 44px; left: 44px; }
+    .corner-br { bottom: 44px; right: 44px; text-align: right; }
+
+    /* Keyframes */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes expand {
+      from { opacity: 1; transform: scaleX(0); }
+      to   { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* Blinking REC dot */
+    .rec {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #b94040;
+      font-style: normal;
+      font-weight: 600;
+    }
+    .rec-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #b94040;
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Film strip edges -->
+  <div class="strip-left" id="sl"></div>
+  <div class="strip-right" id="sr"></div>
+  <div class="strip-top" id="st"></div>
+  <div class="strip-bottom" id="sb"></div>
+
+  <!-- Corner labels -->
+  <div class="corner corner-tl">Est. 2022</div>
+  <div class="corner corner-tr"><span class="rec"><span class="rec-dot"></span>Rec</span></div>
+  <div class="corner corner-bl">© Cam Crew</div>
+  <div class="corner corner-br">001 / 006</div>
+
+  <!-- Center stage -->
+  <div class="stage">
+    <div class="rule"></div>
+
+    <div class="icon-wrap">
+      <span class="streamline-plump--camera-video"></span>
+    </div>
+
+    <div class="brand">Cam Crew</div>
+
+    <div class="divider"></div>
+
+    <div class="subtitle">Coming Soon</div>
+
+    <div class="rule-bottom"></div>
+  </div>
+
+  <script>
+    // Populate film-strip holes
+    function makeHoles(el, isVertical) {
+      const size = isVertical ? el.offsetHeight : el.offsetWidth;
+      const count = Math.floor(size / 22);
+      el.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement('div');
+        h.className = isVertical ? 'hole' : 'hole-h';
+        el.appendChild(h);
+      }
+    }
+    makeHoles(document.getElementById('sl'), true);
+    makeHoles(document.getElementById('sr'), true);
+    makeHoles(document.getElementById('st'), false);
+    makeHoles(document.getElementById('sb'), false);
+  </script>
+</body>
+</html>
